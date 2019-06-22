@@ -13,7 +13,7 @@
   - 포트와 어댑터 아키텍처
     - 포트 : 애플리케이션 용어로 외부 객체를 표현하는 인터페이스 작성(기술적 개념 제외)
 	- 어댑터 : 애플리케이션의 핵심부와 각 기술 도메인 사이에 브리지 코드 작성
-	// 그림 6.1 삽입
+![Alt text](https://github.com/betterdevstomorrow/tdd/blob/master/chapter03/image/pig_6_1.PNG)
   * 캡슐화와 정보 은닉
     - 캡슐화 : 객체의 행위가 해당 객체의 API를 통해서만 좌우될 수 있음을 보장(관련 없는 컴포넌트 간 의존성 제거)
 	- 정보 은닉 : 객체가 해당 객체의 기능을 구현하는 방법을 API단으로 숨김
@@ -161,12 +161,53 @@ notifiesAuctionClosedWhenCloseMessageReceived() {
 - 인터페이스를 사용해 객체가 수행할 수 있는 역할에 이름을 부여하고 객체가 받아들일 메시지를 기술
 - 인터페이스를 되도록 한정된 범위로 사용하려 한다. 인터페이스에 선언되는 메서드 수가 적을수록 해당 메서들르 호출하는 객체의 역할이 명확해진다.
 - 클라이언트에 코드에서 인터페이스를 쓰면 불필요한 정보가 새는 현상을 방지하여 객체 간의 암시적인 결합이 최소화되고 변경하기 쉬운 코드가 된다.
+### 7.6 인터페이스도 리팩터링하라
+- 공통적인 역할을 뽑아내면 '착탈 가능한' 컴포넌트가 많아져서 설계가 좀 더 높은 수준의 추상화로 작업할 수 있다.
+- 개념을 이해하는 데 걸리는 시간이 더 적어질 수 있다.
+- 구현하는 클래스의 구조가 불분명하다는 사실을 알게된다면 인터페이스가 너무 장황해서 쪼개야한다는 힌트가 된다.
+### 7.7 객체를 구성해 시스템의 행위를 기술하라
+- 단위 수준의 TDD는 시스템을 값 타입과 느슨하게 결합된 계산 관련 객체로 분해하는 데 길잡이 노릇을 함
+- jMock에서는 테스트를 위해 예상 호출을 기술한 내용을 Mockery 콘텍스트 객체 내에서 조합 -> 테스트가 실행되는 동안 Mockery는 목 객체의 대상 객체를 상대로 발생한 호출을 Expectation에 전달 -> 각 Expectation에서 호출 일치 여부 검사 -> 일치하면 테스트 성공, 불일치하면 테스트 실패
+- 비교적 적은 코드로 유연한 애플리케이션 구조가 만들어지며, 여러 관련 시나리오를 지원해야 할 때 적절한 방법
+- 각 시나리오에 대해 구축할 다양한 컴포넌트 조합은 애플리케이션의 어떤 부분에 들어갈 하위 시스템에 해당함
+- 설계 확장이 쉽다.
+![Alt text](https://github.com/betterdevstomorrow/tdd/blob/master/chapter03/image/pig_7_1.PNG)
+- example.doSomething() 메서드가 String 타입의 인자로 정확히 한 번 호출되는지 확인하는 테스트 코드는 다음과 같다.
+```java
+InvocationExpectation expectation = new InvocationExpectation();
+expectation.setParametersMatcher(new AllParametersMatcher(Arrays.asList(new IsInstanceOf(String.class))));
+expectation.setCardinality(new Cardinality(1, 1));
+expectation.setMethodMatcher(new Method(NameMatcher("doSomething"));
+expectation.setObjectMatcher(new IsSame<Example>(example));
+
+context.addExpectation(expectation);
+```
+
+### 7.8 고수준 프로그래밍을 위한 대비
+- 우리는 흔히 객체와 그것들의 관계에 관한 정보를 키워드, 설정자, 표기법 등에 묻어버린다(숨긴다?).
+- 객체를 할당하고 연결하는 것이 의도를 표현하지 않기 때문에 시스템의 행위를 이해하는 데 도움이 되지 못한다. 
+- 코드를 두 가지 계층으로 구성
+  - 객체의 그래프에 해당하는 구현 계층 : 객체가 이벤트에 어떻게 반응하는가?
+  - 구현계층의 객체를 만들어내는 선언적 계층 : 각 부분의 용도를 기술(하려는 일이 무엇인가?), 좀 더 융통성이 있어 메서드 호출 연쇄(열차 전복), 정적 메서드 사용 가능
+  - 이전 절의 예제를 다음과 같이 재작성 할 수 있다.
+```java
+context.checking(new Expectations() {{
+	oneOf(example).doSomething(with(any(String.class)));
+}});
+```
+  - Expectations 객체는 예상 구문을 생성하는 빌더로써 예상 구문과 매처의 조합을 생성해 그것을 Mockery로 불러들이는 메서드가 정의되어 있음
+  - 선언적 계층은 거듭되는 '무차별적인' 리팩터링에서 나타난다. 객체를 직접 구성하고 중복을 제거, 도우미 메서드를 추가해 문법적 잡음을 추려내고 예상 구문을 추가, 어떤 영역이 명확해질 때까지 구조를 추가하거나 옮기는 과정에서 발생
+![Alt text](https://github.com/betterdevstomorrow/tdd/blob/master/chapter03/image/pig_7_2.PNG)
+- 목표는 더 적은 코드로 더 많은 일을 해내는 것(객체가 더 작은 해우이의 단위를 형성하는 수준에 이르도록 구현)
+
+### 7.9 그럼 클래스는?
+- 보통 클래스보다 인터페이스를 강조하는데, 다른 객체에서 보는 것은 결국 인터페이스이기 때문이다. 객체의 타입은 해당 객체가 수행하는 역할로 규정된다.
+- 클래스는 구현 세부 사항으로 타입을 구현하는 한 방식이지 타입 자체는 아니다.
+- 공통적인 행위를 추려냄으로써 클래스 계층 구조를 파악하며 가능하다면 위임(클래스에 포함시킴?)으로 리팩터링 하는 방식을 선호 -> 위임으로 코드를 더 유연하고 이해하기 쉽게 만들 수 있음
+- 값 타입은 동위 요소가 없어서 위임을 사용할 가능성이 낮다.
 
 
 
-
-
-![Alt text](https://github.com/Hyunhoo-Kwon/tdd/blob/master/chapter02/images/%EC%9A%94%EA%B5%AC%20%EC%82%AC%ED%95%AD%20%ED%94%BC%EB%93%9C%EB%B0%B1.jpeg)
 - 첫 출시를 달성하는 데 필요한 주요 시스템 컴포넌트와 그러한 컴포넌트의 상호 작용 방식에 대한 대략적인 그림이 필요하다.
 - '동작하는 골격'의 핵심은 팀에서 자신들의 해법을 전체적으로 조망하는 데 이바지하게끔 첫 테스트를 작성하는 과정을 활용해 프로젝트의 맥락을 짚어내는 데 있다.
 - 실제 피드백을 토대로 배우고 개선해 나가는 과정을 시작할 수 있게 TDD 주기를 시작하는 데 필요한 최소한의 의사 결정을 내리는 과정이다.
