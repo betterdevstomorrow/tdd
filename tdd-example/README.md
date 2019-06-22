@@ -130,5 +130,77 @@ public boolean isLeapYear(int year) {
 }
 ```
 
+### 8. TDD의 리듬
+- 윤년 테스트 추가
+- 윤년이란?
+    - 서력 기원 연수가 4로 나누어 떨어지는 해는 우선 윤년으로 하고,
+    - 그 중에서 100으로 나누어 떨어지는 해는 평년으로 하며,
+    - 다만 400으로 나누어 떨어지는 해는 다시 윤년으로 정하였다.
+- SubDateTest.java
+    - 1200년은 400으로 나누어 떨어지고 100으로도 나누어 떨어지지만 400을 먼저 생각하기 때문에 윤년이다. 700년은 100으로 나누어 떨어지기 때문에 윤년이 아니다.
+```
+@Test
+public void testLeapYear() {
+    assertThat(subDate.isLeapYear(0), is(true));
+    assertThat(subDate.isLeapYear(1), is(false));
+    assertThat(subDate.isLeapYear(4), is(true));
+    assertTrue(SubDate.isLeapYear(1200));
+    assertFalse(SubDate.isLeapYear(700));
+}
+```
+
+- SubDate.java
+```
+public boolean isLeapYear(int year) {
+    if (year % 400 == 0)
+        return true;
+    if (year % 100 == 0)
+        return false;
+    if (year % 4 == 0)
+        return true;
+    return false;
+}
+```
+
+```
+public int getYearDay(int year) {
+    int result = 0;
+    for(int i=1; i<year; i++) {
+        if (isLeapYear(i))
+            result += 366;
+        else
+            result += 365;
+    }
+    return result;
+}
+```
+
+### 9. 예외 처리
+- getYearDay 메서드에 음수 값을 넘길 시에 Exception을 발생시킨다.
+- SubDateTest.java
+```
+@Test(expected = RuntimeException.class)
+public void testGetYearDayWithInvalidYear() {
+    subDate.getYearDay(-1);
+}
+```
+
+- SubDate.java
+```
+public int getYearDay(int year) {
+if(year<0)
+    throw new RuntimeException("Invalid year");
+
+int result = 0;
+for(int i=1; i<year; i++) {
+    if (isLeapYear(i))
+        result += 366;
+    else
+        result += 365;
+}
+return result;
+}
+```
+
 ### 참고
 - [테스트 주도 개발 - 점프 투 자바](https://wikidocs.net/224)
