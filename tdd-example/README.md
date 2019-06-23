@@ -202,5 +202,8 @@ return result;
 }
 ```
 
+### 코드
+- getYearDay 구현 코드: https://github.com/betterdevstomorrow/tdd/tree/example-getYearDay/tdd-example/src
+
 ### 참고
 - [테스트 주도 개발 - 점프 투 자바](https://wikidocs.net/224)
