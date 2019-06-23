@@ -40,7 +40,7 @@ dependencies {
 public void testGetYearDay() {
     SubDate subDate = new SubDate();
     assertThat(subDate.getYearDay(1), is(0));
-    assertThat(subDate.getYearDay(1), is(365));
+    assertThat(subDate.getYearDay(2), is(365));
 }
 ```
 - SubDate.java
