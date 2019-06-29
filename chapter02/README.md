@@ -6,6 +6,6 @@
 
 [6장. 객체 지향 스타일](./6.Object-Oriented%20Style.md)
 
-[7장 객체 지향 설계의 달성](./7.Achieving%20Object-Oriented%20Design.md)
+[7장. 객체 지향 설계의 달성](./7.Achieving%20Object-Oriented%20Design.md)
 
 [8장. 서드파티 코드를 기반으로 한 개발](./8.Building%20on%20Third-Party%20Code.md)
