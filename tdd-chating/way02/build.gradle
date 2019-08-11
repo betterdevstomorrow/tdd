@@ -5,6 +5,9 @@
  * For more details take a look at the Java Quickstart chapter in the Gradle
  * User Manual available at https://docs.gradle.org/5.4.1/userguide/tutorial_java_projects.html
  */
+// ext {
+
+// }
 
 plugins {
     // Apply the java plugin to add support for Java
@@ -14,12 +17,20 @@ plugins {
     id 'application'
 }
 
+sourceCompatibility = 1.8
+
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     // jcenter()
     mavenCentral();
 }
+ext{
+    slf4jVersion = '1.7.21'
+    log4j2Version = '2.5'
+    commonsLogging = '1.2'
+}
+
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
@@ -39,6 +50,21 @@ dependencies {
     
     compile 'com.google.firebase:firebase-admin:6.8.1'
 
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.38.Final'
+
+
+    //for spring boot
+    // implementation 'org.springframework.boot:spring-boot-starter'
+	// compileOnly 'org.projectlombok:lombok'
+	// annotationProcessor 'org.projectlombok:lombok'
+	// testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+// SLF4J-Log4j2
+    compile("commons-logging:commons-logging:${commonsLogging}")
+    compile("org.slf4j:slf4j-api:${slf4jVersion}")
+    compile("org.apache.logging.log4j:log4j-api:${log4j2Version}")
+    compile("org.apache.logging.log4j:log4j-core:${log4j2Version}")
+    compile("org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}")
 }
 
 // Define the main class for the application

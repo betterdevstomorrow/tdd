@@ -1,68 +1,38 @@
 package chat.maisy.server;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.BindException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
-import chat.maisy.constant.Status;
+//https://juyoung-1008.tistory.com/23
+public final class Server {
+    private int port;
 
-public class Server {
-	BufferedWriter bw;
+    public static void main(String[] args) throws Exception {
+        new Server(8020).run();
+    }
 
-	ServerSocket serverSocket = null;
-	Socket socket;
+    public Server(int port) {
+        this.port = port;
+    }
 
-	public Server(int port) throws IOException {
-		// 서버 생성
-		serverSocket = new ServerSocket(port);
-		System.out.println("SERVER START: " + port);
-	}
-
-	public void listen() throws BindException {
-		new Thread(() -> {
-			try {
-				socket = serverSocket.accept();
-				System.out.println("Server listen " + socket);
-				sendMessage(Status.CONNECTED.print());
-//				String line;
-//				while ((line = receiveMessage()) != null) {
-//					System.out.println(line);
-//				}
-//				System.out.println("[server] closed by client");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}).start();
-
-	}
-
-	private void sendMessage(String msg) throws IOException {
-		bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-		bw.write(msg);
-		bw.newLine();
-		bw.flush();
-	}
-
-	public void close() throws IOException {
-		if (socket != null) {
-			socket.close();
-		}
-		serverSocket.close();
-		if (bw != null) {
-			bw.close();
-		}
-		System.out.println("SERVER STOPPED");
-	}
-
-	public String receiveMessage() throws IOException {
-		// client가 보낸 데이터 출력
-		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		return br.readLine();
-	}
-
+    public void run() throws InterruptedException {
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new ServerHandler());
+            // 서버를 비동기로 바인딩 후 채널의 closeFuture을 얻고 완료 될 때까지 현재 스레드를 블록킹.
+            ChannelFuture f = b.bind(port).sync();
+            f.channel().closeFuture().sync();
+        } finally {
+            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
+        }
+    }
 }

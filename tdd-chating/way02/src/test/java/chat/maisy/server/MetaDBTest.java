@@ -1,7 +1,6 @@
 package chat.maisy.server;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,19 +15,19 @@ import chat.maisy.entity.Room;
 public class MetaDBTest {
 
 	private MetaDB target;
-//	private ByteArrayOutputStream bout;
+	private ByteArrayOutputStream bout;
 
 	@Before
 	public void setup() throws IOException {
 		target = new MetaDB();
-		// bout = new ByteArrayOutputStream();
+		bout = new ByteArrayOutputStream();
 		System.out.println(target);
 		target.init();
 	}
 
-	@Test
-	public void testGetRoomList() throws InterruptedException, ExecutionException {
-		// bout.reset();
+	@Test //(Description="My funky test")
+		public void testGetRoomList() throws InterruptedException, ExecutionException {
+		bout.reset();
 
 		ArrayList<Room> roomList = target.getRoomList();
         System.out.println(roomList);

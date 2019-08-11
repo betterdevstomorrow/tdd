@@ -7,14 +7,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class Client {
+public class JavaClient {
 	BufferedWriter bw;
 	BufferedReader br;
 	Socket socket;
 	private String serverHost, id;
 	private int serverPort;
 
-	public Client(String userId, String host, int port) {
+	public JavaClient(String userId, String host, int port) {
 		this.id = userId;
 		this.serverHost = host;
 		this.serverPort = port;
