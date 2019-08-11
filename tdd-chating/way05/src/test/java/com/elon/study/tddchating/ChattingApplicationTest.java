@@ -12,7 +12,7 @@ public class ChattingApplicationTest {
     @Test
     @Ignore
     public void chattingApplication() {
-        ChattingServer server = new ChattingServer();
+        ChattingServer server = new ChattingServer("localhost", 8080);
         ChattingClient client = new ChattingClient();
 
         server.start();
@@ -23,6 +23,7 @@ public class ChattingApplicationTest {
         client.enterChatRoom(chatRoom);
         client.chat("message");
         client.exit();
+        server.stop();
     }
 
 }
