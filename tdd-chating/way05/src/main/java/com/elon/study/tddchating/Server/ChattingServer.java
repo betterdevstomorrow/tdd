@@ -1,8 +1,10 @@
 package com.elon.study.tddchating.Server;
 
 import com.corundumstudio.socketio.Configuration;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ChattingServer {
@@ -21,6 +23,10 @@ public class ChattingServer {
     public ChattingServer(Configuration config) {
         this.config = config;
         server = new SocketIOServer(config);
+    }
+
+    public Collection<SocketIOClient> getAllClients() {
+        return server.getAllClients();
     }
 
     public void start() {

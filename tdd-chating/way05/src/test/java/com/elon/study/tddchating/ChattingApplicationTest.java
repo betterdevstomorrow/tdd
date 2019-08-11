@@ -11,12 +11,11 @@ public class ChattingApplicationTest {
 
     @Test
     @Ignore
-    public void chattingApplication() {
+    public void chattingApplication() throws Exception {
         ChattingServer server = new ChattingServer("localhost", 8080);
-        ChattingClient client = new ChattingClient();
-
+        ChattingClient client = new ChattingClient("localhost", 8080);
         server.start();
-        client.start();
+        client.connect();
         client.enterServer(server);
         List<Object> chatRooms = server.getChatRooms();
         Object chatRoom = null;
