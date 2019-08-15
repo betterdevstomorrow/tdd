@@ -1,2 +1,4 @@
 rootProject.name = 'tdd-chating'
+include 'tdd-chating-server'
+include 'tdd-chating-client'
 

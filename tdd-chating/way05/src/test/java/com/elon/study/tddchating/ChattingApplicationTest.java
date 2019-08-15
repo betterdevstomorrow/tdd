@@ -1,7 +1,7 @@
 package com.elon.study.tddchating;
 
-import com.elon.study.tddchating.Client.ChattingClient;
-import com.elon.study.tddchating.Server.ChattingServer;
+import com.elon.study.tddchattingclient.client.ChattingClient;
+import com.elon.study.tddchattingserver.server.ChattingServer;
 import org.junit.Ignore;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.elon.study.tddchating.Server;
+package com.elon.study.tddchattingserver.server;
 
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;

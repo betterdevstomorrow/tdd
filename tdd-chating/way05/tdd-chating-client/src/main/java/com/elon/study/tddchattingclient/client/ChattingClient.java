@@ -1,6 +1,6 @@
-package com.elon.study.tddchating.Client;
+package com.elon.study.tddchattingclient.client;
 
-import com.elon.study.tddchating.Server.ChattingServer;
+import com.elon.study.tddchattingserver.server.ChattingServer;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

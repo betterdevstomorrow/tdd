@@ -1,9 +1,7 @@
-package com.elon.study.tddchating.Server;
+package com.elon.study.tddchattingserver.server;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ChattingServerTest {
 
