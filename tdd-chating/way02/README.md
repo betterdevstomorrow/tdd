@@ -33,3 +33,16 @@
 
 (출처)[https://juyoung-1008.tistory.com/23]
 
+# lombok 세팅
+## install lombok.jar
+- https://projectlombok.org/download
+```
+❯ java -jar lombok.jar
+```
+
+## vscode plugin download
+- https://marketplace.visualstudio.com/items?itemName=GabrielBB.vscode-lombok
+
+
+# netty TEST
+- user `EmbeddedChannel`

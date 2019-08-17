@@ -9,6 +9,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 //http://hatemogi.github.io/netty-startup/2.html#/4
 public class EchoClient {
@@ -22,26 +24,24 @@ public class EchoClient {
 	public static void main(String[] args) {
 		EventLoopGroup group = new NioEventLoopGroup();
 
-		try{
+		try {
 			Bootstrap b = new Bootstrap();
-			b.group(group)
-			.channel(NioSocketChannel.class)
-			.option(ChannelOption.TCP_NODELAY, true)
-			.handler(new ChannelInitializer<SocketChannel>() {
-				@Override
-				protected void initChannel(SocketChannel sc) throws Exception {
-					ChannelPipeline cp = sc.pipeline();
-					cp.addLast(new EchoClientHandler());
-				}
-			});
+			b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true)
+					.handler(new ChannelInitializer<SocketChannel>() {
+						@Override
+						protected void initChannel(SocketChannel sc) throws Exception {
+							ChannelPipeline cp = sc.pipeline();
+							cp.addLast("decoder", new StringDecoder());
+							cp.addLast("encoder", new StringEncoder());
+							cp.addLast("handler", new EchoClientHandler());
+						}
+					});
 
 			ChannelFuture cf = b.connect(HOST, PORT).sync();
 			cf.channel().closeFuture().sync();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally{
+		} finally {
 			group.shutdownGracefully();
 		}
 	}

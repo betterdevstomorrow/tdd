@@ -9,7 +9,19 @@
 
 // }
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE")
+    }
+}
+
 plugins {
+
+  id 'org.springframework.boot' version '2.1.7.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     // Apply the java plugin to add support for Java
     id 'java'
 
@@ -34,7 +46,7 @@ ext{
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
-    implementation 'com.google.guava:guava:27.0.1-jre'
+    // implementation 'com.google.guava:guava:27.0.1-jre'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
@@ -54,17 +66,23 @@ dependencies {
 
 
     //for spring boot
-    // implementation 'org.springframework.boot:spring-boot-starter'
-	// compileOnly 'org.projectlombok:lombok'
-	// annotationProcessor 'org.projectlombok:lombok'
-	// testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // https://mvnrepository.com/artifact/org.springframework/spring-web
+	//compile group: 'org.springframework', name: 'spring-web', version: '5.1.9.RELEASE'
+    
+     compile "org.springframework.boot:spring-boot-starter"
+    compile "org.springframework:spring-web"
+    compile "com.fasterxml.jackson.core:jackson-databind"
+    //implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+	annotationProcessor 'org.projectlombok:lombok:1.18.8'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 // SLF4J-Log4j2
-    compile("commons-logging:commons-logging:${commonsLogging}")
-    compile("org.slf4j:slf4j-api:${slf4jVersion}")
-    compile("org.apache.logging.log4j:log4j-api:${log4j2Version}")
-    compile("org.apache.logging.log4j:log4j-core:${log4j2Version}")
-    compile("org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}")
+    // compile("commons-logging:commons-logging:${commonsLogging}")
+    // compile("org.slf4j:slf4j-api:${slf4jVersion}")
+    // compile("org.apache.logging.log4j:log4j-api:${log4j2Version}")
+    // compile("org.apache.logging.log4j:log4j-core:${log4j2Version}")
+    // compile("org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}")
 }
 
 // Define the main class for the application

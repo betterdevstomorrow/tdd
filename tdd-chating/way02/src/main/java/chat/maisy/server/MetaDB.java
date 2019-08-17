@@ -52,7 +52,7 @@ public class MetaDB {
 			String name = document.getString("name");
 			// System.out.println("Room id " + document.getId());
 			// System.out.println("Room name " + document.getString("name"));
-			roomList.add(new Room(id, name));
+//			roomList.add(new Room(id, name));
 		}
 		return roomList;
 	}

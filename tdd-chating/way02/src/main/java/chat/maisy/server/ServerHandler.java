@@ -1,48 +1,100 @@
 package chat.maisy.server;
 
+import java.net.SocketAddress;
+
 import chat.maisy.TempLogger;
-import io.netty.buffer.ByteBuf;
+import chat.maisy.server.service.RoomService;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
-class ServerHandler extends ChannelInboundHandlerAdapter {
-    private static final ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    // Logger logger = LoggerFactory.getLogger(getClass());
-    TempLogger logger;
+//http://wonwoo.ml/index.php/post/553
 
-    ServerHandler() {
-        logger = new TempLogger(getClass());
-    }
+@Sharable
+//class ServerHandler extends ChannelInboundHandlerAdapter {
+class ServerHandler extends SimpleChannelInboundHandler<String> {
+	private static final ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+	RoomService roomService = new RoomService();
+	TempLogger logger;
 
-    // 채널 입출력 준비 완료 사용자가 들어왔을 때.
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        logger.info("Channel Active");
-    }
+	ServerHandler() {
+		logger = new TempLogger(getClass());
+	}
 
-    // 채널을 읽을 때 동작할 코드를 정의 합니다.
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        String message = ((ByteBuf) msg).toString(CharsetUtil.UTF_8);
-        logger.info(message);
-        ctx.write(msg);
-    }
+	// 채널 입출력 준비 완료 사용자가 들어왔을 때.
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) {
+		logger.info("Channel Active");
 
-    // 채널 읽는 것을 완료했을 때 동작할 코드를 정의 합니다.
+		Channel incoming = ctx.channel();
+		for (Channel channel : channelGroup) {
+			channel.writeAndFlush("[Server]-" + incoming.remoteAddress() + " has joined!\n");
+		}
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
-    }
+//		incoming.write("==== ROOM LIST === ");
+//		incoming.write(msg)
+//		incoming.write(roomService.getRoomList());
+//		incoming.flush();
 
-    // 예외가 발생할 때 동작할 코드를 정의 합니다.
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
-    }
+		channelGroup.add(incoming);
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) {
+		logger.info("Channel In Active");
+
+		Channel incoming = ctx.channel();
+		for (Channel channel : channelGroup) {
+			channel.writeAndFlush("[Server]-" + incoming.remoteAddress() + " has left!\n");
+		}
+		incoming.writeAndFlush("[Server] - left");
+
+		channelGroup.remove(incoming);
+	}
+
+	@Override
+	public void channelRead0(ChannelHandlerContext ctx, String message) {
+//		System.out.println("server channelRead");
+
+		Channel incoming = ctx.channel();
+		SocketAddress clientHost = incoming.remoteAddress();
+		String result = getMessage(clientHost.toString(), message);
+		System.out.println(result);
+
+		for (Channel channel : channelGroup) {
+			if (channel != incoming) {
+//				System.out.println("- " + channel.remoteAddress());
+				channel.writeAndFlush(result + "\n");
+			}
+		}
+
+		if ("bye".equals(message.toLowerCase())) {
+			System.out.println("[close] " + clientHost);
+			ctx.writeAndFlush("exit");
+			ctx.disconnect();
+			ctx.close();
+		}
+		ctx.writeAndFlush(result);
+	}
+
+	public String getMessage(String clientId, String msg) {
+		return "[" + clientId + "] " + msg;
+	}
+
+	// 채널 읽는 것을 완료했을 때 동작할 코드를 정의 합니다.
+	@Override
+	public void channelReadComplete(ChannelHandlerContext ctx) {
+		ctx.flush();
+	}
+
+	// 예외가 발생할 때 동작할 코드를 정의 합니다.
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+		cause.printStackTrace();
+		ctx.close();
+	}
 }
