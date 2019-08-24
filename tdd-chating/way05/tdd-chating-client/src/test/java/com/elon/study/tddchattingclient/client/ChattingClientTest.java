@@ -10,17 +10,11 @@ public class ChattingClientTest {
     @Before
     public void init() throws Exception {
         client = new ChattingClient("localhost", 8080);
-        client.connect();
     }
 
     @Test
     public void connect() throws Exception {
         client.connect();
-    }
-
-    @Test
-    public void chat() throws Exception {
-        client.chat("message");
     }
 
 }

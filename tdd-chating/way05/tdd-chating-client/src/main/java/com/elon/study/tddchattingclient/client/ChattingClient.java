@@ -1,11 +1,8 @@
 package com.elon.study.tddchattingclient.client;
 
-import com.elon.study.tddchattingserver.server.ChattingServer;
-
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import java.net.URISyntaxException;
 
 public class ChattingClient {
 
@@ -18,24 +15,11 @@ public class ChattingClient {
         this.port = port;
     }
 
-    public void connect() throws IOException {
-        socket = new Socket(hostname, port);
-    }
-
-    public void enterServer(ChattingServer server) {
-    }
-
-    public void enterChatRoom(Object chatRoom) {
-    }
-
-    public void chat(String message) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        bw.write(message);
-        bw.newLine();
-        bw.flush();
-    }
-
-    public void exit() {
+    public void connect() throws URISyntaxException {
+        String uri = "http://" + hostname + ":" + port;
+        socket = IO.socket(uri);
+        socket.on(Socket.EVENT_CONNECT, args -> System.out.println("connected"));
+        socket.connect();
     }
 
 }
