@@ -1,16 +1,13 @@
 package entitiy;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import utils.HttpRequest;
-
-import java.io.IOException;
+import java.util.List;
 
 public class ListCommand implements Command {
     private HttpRequest httpRequest = new HttpRequest();
 
     @Override
-    public String execute() throws IOException {
-        JsonNode response = httpRequest.get("https://us-central1-tdd-chatting.cloudfunctions.net/getRooms", null);
-        return response.toString();
+    public List<Room> execute() {
+        return httpRequest.getRoomList();
     }
 }
