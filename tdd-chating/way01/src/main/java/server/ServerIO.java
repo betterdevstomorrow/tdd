@@ -1,5 +1,6 @@
 package server;
 
+import com.corundumstudio.socketio.BroadcastAckCallback;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 
@@ -26,13 +27,15 @@ public class ServerIO {
     public static void main(String[] args) {
         SocketIOServer server = new ServerIO("localhost", 12345).createServer();
 
-
         server.addConnectListener(client -> {
             System.out.println(client.getSessionId() + " is Connected");
-            server.getClient(client.getSessionId()).sendEvent("id", 1);
-
         });
-        server.addEventListener("message", String.class, (client, data, ackSender) -> server.getBroadcastOperations().sendEvent("message", data));
+
+        server.addEventListener("message", String.class, (client, data, ackSender) ->
+                server.getBroadcastOperations().sendEvent("message", data, client, new BroadcastAckCallback(String.class, 1000)));
+
+//        server.addEventListener("command", );
+
         server.start();
         System.out.println("Server is listening on 12345");
     }

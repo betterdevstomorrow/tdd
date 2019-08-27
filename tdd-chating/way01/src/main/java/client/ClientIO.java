@@ -33,6 +33,10 @@ public class ClientIO {
         socket.emit("message",msg);
     }
 
+    public boolean isConnected() {
+        return socket.connected();
+    }
+
     private Emitter.Listener onConnect = args -> System.out.println("Connected");
     private Emitter.Listener onError = args -> System.err.println(args[0]);
     private Emitter.Listener onDisconnect = args -> System.out.println("Disconnected");
