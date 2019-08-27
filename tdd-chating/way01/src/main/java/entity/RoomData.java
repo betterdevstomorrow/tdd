@@ -1,4 +1,4 @@
-package entitiy;
+package entity;
 
 public class RoomData {
     private String name;

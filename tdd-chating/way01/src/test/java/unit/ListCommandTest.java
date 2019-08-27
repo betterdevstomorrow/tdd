@@ -1,41 +1,63 @@
 package unit;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import entitiy.ListCommand;
+import command.ListCommand;
 
+import entity.Room;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import utils.HttpRequest;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+@RunWith(Enclosed.class)
 public class ListCommandTest {
-    @Mock
-    private HttpRequest httpReqeust;
 
-    @InjectMocks
-    private ListCommand listCommand;
+    public static class testWithMock {
+        @Mock
+        private HttpRequest httpReqeust;
 
-    @Before
-    public void initialize() {
-        System.out.println("initialized");
-        MockitoAnnotations.initMocks(this);
+        @InjectMocks
+        private ListCommand listCommand;
+
+        @Before
+        public void initialize() {
+            System.out.println("initialized");
+            MockitoAnnotations.initMocks(this);
+        }
+
+        @Test
+        public void testExecuteWithMock() {
+            List<Room> rooms = Arrays.asList(new Room("1", "a"), new Room("2", "b"));
+            when(httpReqeust.getRoomList()).thenReturn(rooms);
+
+            List<Room> result = listCommand.execute();
+            assertThat(result, isA(List.class));
+            assertThat(result.size(), equalTo(2));
+            assertThat(result, hasItem(anyOf(hasProperty("id", equalTo("1")))));
+            assertThat(result, hasItem(anyOf(hasProperty("id", equalTo("2")))));
+        }
     }
 
-    @Test
-    public void testExecute() throws IOException {
-        JsonNode jsonNode = new ObjectMapper().createArrayNode();
-        ((ArrayNode) jsonNode).addObject();
-        when(httpReqeust.get("https://us-central1-tdd-chatting.cloudfunctions.net/getRooms", null)).thenReturn(jsonNode);
-        assertThat(listCommand.execute(), is("woo"));
+    public static class testWithoutMock {
+        @Test
+        public void testExecuteWithoutMock() {
+            ListCommand listCommand = new ListCommand();
+            List<Room> result = listCommand.execute();
+            assertThat(result, isA(List.class));
+            assertThat(result.size(), equalTo(2));
+            assertThat(result, hasItem(anyOf(hasProperty("id", equalTo("YNPxHSShQa7UAR9qntt9")))));
+            assertThat(result, hasItem(anyOf(hasProperty("id", equalTo("lesJrL6xS5e5aRk77u0s")))));
+        }
     }
 }

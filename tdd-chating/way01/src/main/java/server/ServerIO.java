@@ -39,8 +39,4 @@ public class ServerIO {
         server.start();
         System.out.println("Server is listening on 12345");
     }
-
-    public List getRooms() {
-        return null;
-    }
 }

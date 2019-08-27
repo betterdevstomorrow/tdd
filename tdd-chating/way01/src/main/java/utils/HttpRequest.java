@@ -2,6 +2,9 @@ package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import entity.Room;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -10,6 +13,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class HttpRequest {
@@ -27,6 +31,20 @@ public class HttpRequest {
 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readTree(response.getBody());
+    }
+
+    public List<Room> getRoomList() {
+        String url = "https://us-central1-tdd-chatting.cloudfunctions.net/getRooms";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<Room>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Room>>() {});
+        return response.getBody();
+    }
+
+    public String createRoom(String roomName) {
+        String url = "https://us-central1-tdd-chatting.cloudfunctions.net/createRoom?name=".concat(roomName);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        return response.getBody();
     }
 
     public URL getUrl(String urlStr) throws MalformedURLException {

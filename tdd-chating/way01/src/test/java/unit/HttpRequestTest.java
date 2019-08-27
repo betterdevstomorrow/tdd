@@ -1,6 +1,7 @@
 package unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import entity.Room;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,12 +16,10 @@ import utils.HttpRequest;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Enclosed.class)
@@ -66,7 +65,14 @@ public class HttpRequestTest {
             String url = "https://us-central1-tdd-chatting.cloudfunctions.net/getRooms";
             JsonNode response = httpRequest.get(url, null);
             assertThat(response.toString(), equalTo("[{\"id\":\"YNPxHSShQa7UAR9qntt9\",\"data\":{\"name\":\"전승훈\"}},{\"id\":\"lesJrL6xS5e5aRk77u0s\",\"data\":{\"name\":\"no.1\"}}]"));
-//             check exception handling (400, 500)
+        }
+
+        @Test
+        public void testGetRoomList() {
+            List<Room> rooms = httpRequest.getRoomList();
+            assertThat(rooms.size(), equalTo(2));
+            assertThat(rooms, hasItem(anyOf(hasProperty("id", equalTo("YNPxHSShQa7UAR9qntt9")))));
+            assertThat(rooms, hasItem(anyOf(hasProperty("id", equalTo("lesJrL6xS5e5aRk77u0s")))));
         }
 
         @Test
