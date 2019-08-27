@@ -1,14 +1,14 @@
-package entitiy;
+package entity;
 
-public class Room {
+public class User {
     private String id = "";
-    private RoomData data = new RoomData();
+    private UserData data = new UserData();
 
-    public Room() {
+    public User() {
 
     }
 
-    public Room(String id, String name) {
+    public User(String id, String name) {
         this.id = id;
         data.setName(name);
     }
@@ -29,11 +29,11 @@ public class Room {
         data.setName(name);
     }
 
-    public RoomData getData() {
+    public UserData getData() {
         return data;
     }
 
-    public void setData(RoomData data) {
+    public void setData(UserData data) {
         this.data = data;
     }
 }

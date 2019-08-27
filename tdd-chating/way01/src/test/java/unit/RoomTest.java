@@ -1,7 +1,7 @@
 package unit;
 
-import entitiy.Room;
-import entitiy.RoomData;
+import entity.Room;
+import entity.RoomData;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;

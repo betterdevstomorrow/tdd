@@ -1,8 +1,8 @@
 package unit;
 
-import entitiy.ListCommand;
+import command.ListCommand;
 
-import entitiy.Room;
+import entity.Room;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;

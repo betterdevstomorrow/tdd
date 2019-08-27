@@ -1,7 +1,7 @@
 package unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import entitiy.Room;
+import entity.Room;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

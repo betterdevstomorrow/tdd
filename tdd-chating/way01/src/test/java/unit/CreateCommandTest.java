@@ -1,6 +1,6 @@
 package unit;
 
-import entitiy.CreateCommand;
+import command.CreateCommand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -8,7 +8,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import utils.CommandParser;
 import utils.HttpRequest;
+
+import static org.mockito.Mockito.doThrow;
 
 @RunWith(Enclosed.class)
 public class CreateCommandTest {
@@ -22,20 +25,31 @@ public class CreateCommandTest {
 
         @Before
         public void initialize() {
-            System.out.println("initialized");
             MockitoAnnotations.initMocks(this);
         }
 
-        @Test
-        public void testExecuteWithMock() {
+        @Test(expected=Exception.class)
+        public void testExecuteWithMock() throws CommandParser.IncorrectCommandException {
+            String roomName = "test";
+            doThrow(new Exception()).when(httpReqeust).createRoom(roomName);
 
+            createCommand.execute();
         }
+
     }
 
     public static class testWithoutMock {
         @Test
-        public void testExecuteWithoutMock() {
-            CreateCommand createCommand = new CreateCommand();
+        public void testExecuteWithoutMock() throws CommandParser.IncorrectCommandException {
+            CreateCommand createCommand = new CreateCommand("/create -n test1 -u user1");
+            createCommand.execute();
         }
+
+        @Test(expected = CommandParser.IncorrectCommandException.class)
+        public void testExecuteWithWrongParam() throws CommandParser.IncorrectCommandException {
+            CreateCommand createCommand = new CreateCommand("/create -u user1");
+            createCommand.execute();
+        }
+
     }
 }
