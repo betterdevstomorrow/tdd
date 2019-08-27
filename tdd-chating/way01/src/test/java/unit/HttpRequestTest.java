@@ -1,3 +1,5 @@
+package unit;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,6 +47,7 @@ public class HttpRequestTest {
             HttpRequest httpRequest = new HttpRequest();
 
             thrown.expect(MalformedURLException.class);
+
             httpRequest.getUrl(wrongUrl);
         }
 
