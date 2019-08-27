@@ -1,10 +1,9 @@
 package utils;
 
-import entitiy.Command;
-import entitiy.ListCommand;
+import command.ListCommand;
 
 public class CommandParser {
-    public static Command select(String command) throws IncorrectCommandException {
+    public static Object select(String command) throws IncorrectCommandException {
         if (command.startsWith("/list")) {
             return new ListCommand();
         } else if (command.startsWith("/create")) {

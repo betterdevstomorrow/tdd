@@ -2,7 +2,7 @@ package utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entitiy.Room;
+import entity.Room;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +37,13 @@ public class HttpRequest {
         String url = "https://us-central1-tdd-chatting.cloudfunctions.net/getRooms";
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<List<Room>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Room>>() {});
+        return response.getBody();
+    }
+
+    public String createRoom(String roomName) {
+        String url = "https://us-central1-tdd-chatting.cloudfunctions.net/createRoom?name=".concat(roomName);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         return response.getBody();
     }
 

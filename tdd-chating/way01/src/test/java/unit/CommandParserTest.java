@@ -1,6 +1,6 @@
 package unit;
 
-import entitiy.ListCommand;
+import command.ListCommand;
 import org.junit.Test;
 import utils.CommandParser;
 

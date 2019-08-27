@@ -1,6 +1,6 @@
 package unit;
 
-import entitiy.CreateCommand;
+import command.CreateCommand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import utils.HttpRequest;
+
+import static org.mockito.Mockito.doThrow;
 
 @RunWith(Enclosed.class)
 public class CreateCommandTest {
@@ -26,9 +28,13 @@ public class CreateCommandTest {
             MockitoAnnotations.initMocks(this);
         }
 
-        @Test
+        @Test(expected=Exception.class)
         public void testExecuteWithMock() {
+            String roomName = "test";
+            String userName = "user";
+            doThrow(new Exception()).when(httpReqeust).createRoom(roomName);
 
+            createCommand.execute(roomName, userName);
         }
     }
 
@@ -36,6 +42,9 @@ public class CreateCommandTest {
         @Test
         public void testExecuteWithoutMock() {
             CreateCommand createCommand = new CreateCommand();
+            String roomName = "test1";
+            String userName = "user1";
+            createCommand.execute(roomName, userName);
         }
     }
 }

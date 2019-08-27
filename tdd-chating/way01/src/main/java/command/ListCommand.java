@@ -1,12 +1,12 @@
-package entitiy;
+package command;
 
+import entity.Room;
 import utils.HttpRequest;
 import java.util.List;
 
-public class ListCommand implements Command {
+public class ListCommand {
     private HttpRequest httpRequest = new HttpRequest();
 
-    @Override
     public List<Room> execute() {
         return httpRequest.getRoomList();
     }
