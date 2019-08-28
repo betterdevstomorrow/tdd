@@ -26,11 +26,16 @@ exports.createRoom = functions.https.onRequest(async (req, res) => {
 
     for( var i=0; i < 20; i++ )
         id += possible.charAt(Math.floor(Math.random() * possible.length));
-    
+
     var docRef = db.collection('rooms').doc(id);
 
-    var setAda = docRef.set({
-        name: req.query.name
+    await docRef.create({ name: req.query.name }).then(() => res.send(id));
+});
+
+exports.deleteRoom = functions.https.onRequest(async (req, res) => {
+    const id = req.query.id;
+    let docRef = db.collection('rooms').doc(id);
+    await docRef.delete().then(() => {
+        res.send(`Document id: ${id} successfully deleted`);
     });
-    res.send("ok");
 });
